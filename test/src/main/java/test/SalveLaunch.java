@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.Date;
 
 public class SalveLaunch {
-    public static final String IP_ADDR = "localhost";//服务器地址 
+    public static final String IP_ADDR = "192.168.1.123";//服务器地址
     public static final int    PORT    = 12345;      //服务器端口号
 
     public static void main(String[] args) {
@@ -25,10 +25,9 @@ public class SalveLaunch {
             while (true) {
                 while ((inString = in.readLine()) != null && inString.length() != 0) {
                     System.out.println(inString);
-                    out.write(new Date() + ":" + inString + "\n");
+                    out.write(inString + "\n");
                     out.flush();
                 }
-
             }
 
         } catch (Exception e) {

@@ -12,8 +12,11 @@ import java.util.Date;
  */
 public class CallBackMessage extends Message {
     private String objectId;
-    public CallBackMessage(String message) {
-        super(message);
+
+    public CallBackMessage() {
+    }
+    public CallBackMessage(String message, String sender) {
+        super(message, sender);
     }
 
     public String getObjectId() {
@@ -25,7 +28,7 @@ public class CallBackMessage extends Message {
     }
 
     public static void main(String... args) {
-        CallBackMessage message = new CallBackMessage("message");
+        CallBackMessage message = new CallBackMessage("message","MASTER");
         message.setSendTime(new Date());
         message.setObjectId("112");
         System.out.println(message);

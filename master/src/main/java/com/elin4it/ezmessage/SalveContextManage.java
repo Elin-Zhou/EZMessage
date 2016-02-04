@@ -4,22 +4,31 @@
  */
 package com.elin4it.ezmessage;
 
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.log4j.Logger;
+
+import com.elin4it.ezmessage.thread.ReadThread;
+import com.elin4it.ezmessage.thread.SalveHandle;
+import com.elin4it.ezmessage.thread.WriteThread;
 
 /**
  * @author ElinZhou
  * @version $Id: SalveContextManage.java , v 0.1 2016/2/3 15:07 ElinZhou Exp $
  */
 public class SalveContextManage {
-    private static final ConcurrentHashMap<String, SalveContext> aliveSalve = new ConcurrentHashMap<String, SalveContext>();
-    private static final Logger                                  LOGGER     = Logger
+    /**
+     * 心跳最大时间间隔（ms）
+     */
+    public static final long                                     HEART_BEAT_DELAY = 5000;
+    private static final ConcurrentHashMap<String, SalveContext> aliveSalve       = new ConcurrentHashMap<String, SalveContext>();
+    private static final Logger                                  LOGGER           = Logger
         .getLogger(SalveContextManage.class);
 
     /**
@@ -56,24 +65,11 @@ public class SalveContextManage {
     }
 
     /**
-     * 获取当前连接的salve的处理器
+     * 获取当前连接的salve的上下文
      * @return
      */
-    public static List<SalveHandle> getAliveSalveHandles() {
-        List<SalveHandle> salveHandles = new ArrayList<SalveHandle>();
-        for (SalveContext context : aliveSalve.values()) {
-            salveHandles.add(context.getSalveHandle());
-        }
-        return salveHandles;
-    }
-
-    /**
-     * 获得salve的处理器
-     * @param salveId
-     * @return
-     */
-    public static SalveHandle getSalveHandle(String salveId) {
-        return get(salveId).getSalveHandle();
+    public static Collection<SalveContext> getAliveSalveContext() {
+        return aliveSalve.values();
     }
 
     /**
@@ -97,10 +93,10 @@ public class SalveContextManage {
     /**
      * 设置从节点写线程Future
      * @param salveId
-     * @param writeThreadFuture
+     * @param writeThread
      */
-    public static void setWriteThreadFuture(String salveId, Future<WriteThread> writeThreadFuture) {
-        get(salveId).setWriteThreadFuture(writeThreadFuture);
+    public static void setWriteThread(String salveId, WriteThread writeThread) {
+        get(salveId).setWriteThread(writeThread);
     }
 
     /**
@@ -113,23 +109,38 @@ public class SalveContextManage {
     }
 
     /**
+     * 设置接收到心跳的时间
+     * @param salveId
+     * @param lastHeartBeatTime
+     */
+    public static void setLastHeartBeatTime(String salveId, Date lastHeartBeatTime) {
+        get(salveId).setLastHeartBeatTime(lastHeartBeatTime);
+    }
+
+    /**
+     * 获取salve的上下文
+     * @param salveId
+     * @return
+     */
+    public static SalveContext get(String salveId) {
+        return aliveSalve.get(salveId);
+    }
+
+    /**
      * 杀死所以与该从节点运行有关的线程
      * @param salveId
      */
     private static void kill(String salveId) {
         SalveContext salve = aliveSalve.get(salveId);
         if (salve != null) {
-            while (!salve.getSalveHandleFuture().isDone())
-                salve.getSalveHandleFuture().cancel(true);
-            while (!salve.getReadThreadFuture().isDone())
-                salve.getReadThreadFuture().cancel(true);
-            while (!salve.getWriteThreadFuture().isDone())
-                salve.getWriteThreadFuture().cancel(true);
+            try {
+                salve.getSalveHandle().getSalveSocket().getSocket().close();
+                salve.getWriteThread().setIsRun(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
 
-    private static SalveContext get(String salveId) {
-        return aliveSalve.get(salveId);
-    }
 }

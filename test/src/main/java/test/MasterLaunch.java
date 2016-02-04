@@ -4,7 +4,10 @@
  */
 package test;
 
+import com.elin4it.ezmessage.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.messageResolve.SimpleMessageResolve;
 import com.elin4it.ezmessage.SimperReceiver;
+import com.elin4it.ezmessage.message.CustomMessage;
 import com.elin4it.ezmessage.message.Message;
 
 /**
@@ -16,6 +19,8 @@ import com.elin4it.ezmessage.message.Message;
 public class MasterLaunch {
     public static void main(String[] args) {
         SimperReceiver receiver = new SimperReceiver(12345);
+        MessageResolve messageResolve = new SimpleMessageResolve();
+        receiver.setMessageResolve(messageResolve);
         receiver.start();
         //        try {
         //            Thread.sleep(5000);
@@ -24,8 +29,8 @@ public class MasterLaunch {
         //        }
         //        receiver.pause();
         while (true) {
-            Message message = new Message(System.currentTimeMillis() + "你好你好");
-            receiver.sendMessage(message);
+            //                        Message message = new CustomMessage("你好你好", "MASTER");
+            //                        receiver.sendMessage(message);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

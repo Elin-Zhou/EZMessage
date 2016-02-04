@@ -29,21 +29,6 @@ public class SalveSocket {
         return stringBuilder.toString();
     }
 
-    /**
-     * 检测与salve是否连接
-     * @return
-     */
-    public boolean isConnected() {
-        try {
-
-            socket.sendUrgentData(0xFF);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-
-    }
-
     public String getSalveId() {
         return salveId;
     }

@@ -4,10 +4,14 @@
  */
 package com.elin4it.ezmessage;
 
+import com.elin4it.ezmessage.messageResolve.MessageResolve;
 import com.elin4it.ezmessage.message.Message;
+import com.elin4it.ezmessage.thread.CheckSocketStatus;
+import com.elin4it.ezmessage.thread.ReceiverServer;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * 主节点接收者
@@ -20,27 +24,18 @@ public class SimperReceiver {
     private int             port;
     private ReceiverServer  receiverServer;
     private ExecutorService socketServiceExecutor = Executors.newFixedThreadPool(2);
-    private ExecutorService clientExecutor = Executors.newCachedThreadPool();
+    private ExecutorService clientExecutor        = Executors.newCachedThreadPool();
+    private MessageResolve  messageResolve;
 
     public SimperReceiver(int port) {
         this.port = port;
-        receiverServer = new ReceiverServer(port,clientExecutor);
+
     }
 
     public boolean start() {
-        receiverServer.start();
-        socketServiceExecutor.execute(receiverServer);
-//        socketServiceExecutor.execute(new CheckSocketStatus());
-        return true;
-    }
-
-    public boolean pause() {
-        receiverServer.pause();
-        return true;
-    }
-
-    public boolean goOn() {
-        receiverServer.goOn();
+        receiverServer = new ReceiverServer(port, clientExecutor, messageResolve);
+        socketServiceExecutor.submit(receiverServer);
+        Future future =socketServiceExecutor.submit(new CheckSocketStatus());
         return true;
     }
 
@@ -52,4 +47,11 @@ public class SimperReceiver {
         receiverServer.sendMessage(message);
     }
 
+    public MessageResolve getMessageResolve() {
+        return messageResolve;
+    }
+
+    public void setMessageResolve(MessageResolve messageResolve) {
+        this.messageResolve = messageResolve;
+    }
 }
