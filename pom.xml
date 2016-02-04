@@ -63,7 +63,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>1.2-SNAPSHOT</version>
+                <version>3.0.3</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <threshold>High</threshold>
@@ -82,7 +82,7 @@
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<salveId>attach-sources</salveId>
+						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>
