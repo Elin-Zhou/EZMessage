@@ -7,7 +7,7 @@ package com.elin4it.ezmessage.thread;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.elin4it.ezmessage.message.*;
-import com.elin4it.ezmessage.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.MessageResolve.MessageResolve;
 
 /**
  * 消息解析线程

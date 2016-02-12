@@ -4,7 +4,7 @@
  */
 package com.elin4it.ezmessage;
 
-import com.elin4it.ezmessage.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.MessageResolve.MessageResolve;
 import com.elin4it.ezmessage.message.Message;
 import com.elin4it.ezmessage.thread.CheckSocketStatus;
 import com.elin4it.ezmessage.thread.ReceiverServer;
