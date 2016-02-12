@@ -1,7 +1,7 @@
 # EZMessage(开发中...)
 
-作者(Author):夕下奕林(ElinZhou)
-版本(Version):1.0
+##作者(Author):夕下奕林(ElinZhou)
+##版本(Version):1.0
 
 ##简介
 
