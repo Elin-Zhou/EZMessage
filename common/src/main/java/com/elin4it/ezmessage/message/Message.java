@@ -40,7 +40,7 @@ public class Message {
         Message message;
         message = JSON.parseObject(messageString, Message.class);
         //先验证数据正确性
-        if (message == null || !check(messageString)) {
+        if (message == null) {
             return null;
         }
 

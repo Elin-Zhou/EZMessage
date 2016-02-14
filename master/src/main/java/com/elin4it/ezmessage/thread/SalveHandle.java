@@ -4,10 +4,12 @@
  */
 package com.elin4it.ezmessage.thread;
 
-import com.elin4it.ezmessage.MessageResolve.MessageResolve;
+import com.elin4it.ezmessage.messageResolve.MessageResolve;
 import com.elin4it.ezmessage.SalveContextManage;
-import com.elin4it.ezmessage.SalveSocket;
+import com.elin4it.ezmessage.entity.EZSocket;
 import com.elin4it.ezmessage.message.Message;
+import com.elin4it.ezmessage.util.connect.ReadThread;
+import com.elin4it.ezmessage.util.connect.WriteThread;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ExecutorService;
@@ -21,7 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @version $Id: SalveHandle.java , v 0.1 2016/2/2 13:48 ElinZhou Exp $
  */
 public class SalveHandle implements Runnable {
-    private SalveSocket                  salveSocket;
+    private EZSocket EZSocket;
     private static final Logger          LOGGER            = Logger.getLogger(SalveHandle.class);
     private LinkedBlockingQueue<Message> sendMessageQueue  = new LinkedBlockingQueue<Message>();
     private LinkedBlockingQueue<String>  receiveMessageQueue;
@@ -32,9 +34,9 @@ public class SalveHandle implements Runnable {
      */
     private long                         checkDelay        = 100;
 
-    public SalveHandle(SalveSocket salveSocket, LinkedBlockingQueue<String> receiveMessageQueue,
+    public SalveHandle(EZSocket EZSocket, LinkedBlockingQueue<String> receiveMessageQueue,
                        MessageResolve messageResolve) {
-        this.salveSocket = salveSocket;
+        this.EZSocket = EZSocket;
         this.receiveMessageQueue = receiveMessageQueue;
         this.messageResolve = messageResolve;
     }
@@ -43,24 +45,24 @@ public class SalveHandle implements Runnable {
         sendMessageQueue.add(message);
     }
 
-    public SalveSocket getSalveSocket() {
-        return salveSocket;
+    public EZSocket getEZSocket() {
+        return EZSocket;
     }
 
     public void run() {
 
         try {
             //启动读线程
-            ReadThread readThread = new ReadThread(salveSocket, receiveMessageQueue);
+            ReadThread readThread = new ReadThread(EZSocket, receiveMessageQueue);
             Future readThreadFuture = readWriteExecutor.submit(new Thread(readThread));
             //设置运行上下文
-            SalveContextManage.setReadThreadFuture(salveSocket.getSalveId(), readThreadFuture);
+            SalveContextManage.setReadThreadFuture(EZSocket.getId(), readThreadFuture);
 
             //启动写线程
-            WriteThread writeThread = new WriteThread(salveSocket, sendMessageQueue);
+            WriteThread writeThread = new WriteThread(EZSocket, sendMessageQueue);
             Future writeThreadFuture = readWriteExecutor.submit(writeThread);
             //设置运行上下文
-            SalveContextManage.setWriteThread(salveSocket.getSalveId(), writeThread);
+            SalveContextManage.setWriteThread(EZSocket.getId(), writeThread);
 
 
         } catch (Exception e) {

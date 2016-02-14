@@ -1,4 +1,4 @@
-package com.elin4it.ezmessage.MessageResolve;
+package com.elin4it.ezmessage.messageResolve;
 
 import com.elin4it.ezmessage.message.Message;
 

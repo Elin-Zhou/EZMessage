@@ -4,11 +4,11 @@
  */
 package com.elin4it.ezmessage.thread;
 
-import com.elin4it.ezmessage.MessageResolve.MessageResolve;
+import com.elin4it.ezmessage.entity.EZSocket;
 import com.elin4it.ezmessage.SalveContext;
 import com.elin4it.ezmessage.SalveContextManage;
-import com.elin4it.ezmessage.SalveSocket;
 import com.elin4it.ezmessage.message.Message;
+import com.elin4it.ezmessage.messageResolve.MessageResolve;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ReceiverServer implements Runnable {
     private int                         port;
     private ServerSocket                serverSocket;
     private ExecutorService             clientExecutor;
-    private MessageResolve              messageResolve;
+    private MessageResolve messageResolve;
     private LinkedBlockingQueue<String> receiveMessageQueue = new LinkedBlockingQueue<String>();
     private ExecutorService             resolveExecutor     = Executors.newSingleThreadExecutor();
 
@@ -72,7 +72,7 @@ public class ReceiverServer implements Runnable {
             LOGGER.info("服务启动");
             serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(10);
-            SalveSocket salveSocket;
+            EZSocket ezSocket;
             SalveHandle salveHandle;
 
             //如果配置了消息解析方式，则启动消息解析线程
@@ -84,24 +84,24 @@ public class ReceiverServer implements Runnable {
 
             while (true) {
                 try {
-                    salveSocket = new SalveSocket(serverSocket.accept());
+                    ezSocket = new EZSocket(serverSocket.accept());
                 } catch (IOException e) {
                     continue;
                 }
-                if (salveSocket != null) {
-                    LOGGER.info("新的从节点接入，IP为：" + salveSocket.getSocket().getInetAddress());
-                    salveHandle = new SalveHandle(salveSocket, receiveMessageQueue, messageResolve);
+                if (ezSocket != null) {
+                    LOGGER.info("新的从节点接入，IP为：" + ezSocket.getSocket().getInetAddress());
+                    salveHandle = new SalveHandle(ezSocket, receiveMessageQueue, messageResolve);
 
                     //把新的salve添加到上下文中
-                    SalveContext salveContext = new SalveContext(salveSocket.getSalveId());
+                    SalveContext salveContext = new SalveContext(ezSocket.getId());
                     salveContext.setSalveHandle(salveHandle);
                     SalveContextManage.addSalve(salveContext);
 
                     Future salveHandleFuture = clientExecutor.submit(salveHandle);
-                    SalveContextManage.setSalveHandleFuture(salveSocket.getSalveId(),
+                    SalveContextManage.setSalveHandleFuture(ezSocket.getId(),
                         salveHandleFuture);
                     //把创建时间设为第一次得到心跳信号的时间
-                    SalveContextManage.setLastHeartBeatTime(salveSocket.getSalveId(), new Date());
+                    SalveContextManage.setLastHeartBeatTime(ezSocket.getId(), new Date());
                 }
 
             }

@@ -2,24 +2,29 @@
  * Yumeitech.com.cn Inc.
  * Copyright (c) 2014-2016 All Rights Reserved.
  */
-package com.elin4it.ezmessage;
+package com.elin4it.ezmessage.entity;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Date;
 
 /**
  * @author ElinZhou
- * @version $Id: SalveSocket.java , v 0.1 2016/2/2 14:03 ElinZhou Exp $
+ * @version $Id: EZSocket.java , v 0.1 2016/2/2 14:03 ElinZhou Exp $
  */
-public class SalveSocket {
-    private String salveId;
+public class EZSocket {
+    private String id;
     private Date   connectDate;
     private Socket socket;
 
-    public SalveSocket(Socket socket) {
+    public EZSocket(Socket socket) {
         this.socket = socket;
-        this.salveId = newId();
+        this.id = newId();
         this.connectDate = new Date();
+    }
+
+    public EZSocket(String address, Integer port) throws IOException {
+        this(new Socket(address, port));
     }
 
     private String newId() {
@@ -29,12 +34,12 @@ public class SalveSocket {
         return stringBuilder.toString();
     }
 
-    public String getSalveId() {
-        return salveId;
+    public String getId() {
+        return id;
     }
 
-    public void setSalveId(String salveId) {
-        this.salveId = salveId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Date getConnectDate() {

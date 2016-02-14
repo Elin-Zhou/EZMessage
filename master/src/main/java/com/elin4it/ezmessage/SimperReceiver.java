@@ -4,14 +4,13 @@
  */
 package com.elin4it.ezmessage;
 
-import com.elin4it.ezmessage.MessageResolve.MessageResolve;
-import com.elin4it.ezmessage.message.Message;
-import com.elin4it.ezmessage.thread.CheckSocketStatus;
-import com.elin4it.ezmessage.thread.ReceiverServer;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+
+import com.elin4it.ezmessage.message.Message;
+import com.elin4it.ezmessage.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.thread.CheckSocketStatus;
+import com.elin4it.ezmessage.thread.ReceiverServer;
 
 /**
  * 主节点接收者
@@ -35,13 +34,10 @@ public class SimperReceiver {
     public boolean start() {
         receiverServer = new ReceiverServer(port, clientExecutor, messageResolve);
         socketServiceExecutor.submit(receiverServer);
-        Future future =socketServiceExecutor.submit(new CheckSocketStatus());
+        socketServiceExecutor.submit(new CheckSocketStatus());
         return true;
     }
 
-    public boolean stop() {
-        return false;
-    }
 
     public void sendMessage(Message message) {
         receiverServer.sendMessage(message);

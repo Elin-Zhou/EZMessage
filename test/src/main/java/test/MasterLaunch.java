@@ -4,8 +4,8 @@
  */
 package test;
 
-import com.elin4it.ezmessage.MessageResolve.MessageResolve;
-import com.elin4it.ezmessage.MessageResolve.SimpleMessageResolve;
+import com.elin4it.ezmessage.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.messageResolve.SimpleMessageResolve;
 import com.elin4it.ezmessage.SimperReceiver;
 import com.elin4it.ezmessage.message.CustomMessage;
 import com.elin4it.ezmessage.message.Message;

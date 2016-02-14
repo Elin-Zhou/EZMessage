@@ -7,7 +7,6 @@ package com.elin4it.ezmessage.thread;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.elin4it.ezmessage.message.*;
-import com.elin4it.ezmessage.messageResolve.HeartBeatMessageResolve;
 import com.elin4it.ezmessage.messageResolve.MessageResolve;
 
 /**
@@ -19,7 +18,6 @@ public class MessageResolveThread implements Runnable {
 
     private MessageResolve              messageResolve;
     private LinkedBlockingQueue<String> receiveMessageQueue;
-    private MessageResolve              heartBeatMessageResolve = new HeartBeatMessageResolve();
 
     public MessageResolveThread(MessageResolve messageResolve,
                                 LinkedBlockingQueue<String> receiveMessageQueue) {
@@ -35,16 +33,12 @@ public class MessageResolveThread implements Runnable {
                     String messageString = receiveMessageQueue.take();
                     Message message = Message.convertMessage(messageString);
                     if (message instanceof SystemMessage) {
-                        SystemMessage systemMessage = (SystemMessage) message;
-                        //如果该系统消息为心跳信息，则通知心跳处理机制
-                        if (systemMessage.getSystemMessageType() == SystemMessageType.HEART_BEAT) {
-                            heartBeatMessageResolve.resolve(systemMessage);
-                        }
+                        //处理系统消息
                     } else if (message instanceof CallBackMessage) {
-
+                        //处理回调消息
                     } else if (message instanceof CustomMessage) {
-
-                        messageResolve.resolve(message);
+                        //处理客户消息
+                        messageResolve.resolve((CustomMessage) message);
                     } else {
                         continue;
                     }

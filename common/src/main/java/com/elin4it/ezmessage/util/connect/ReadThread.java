@@ -2,7 +2,7 @@
  * Yumeitech.com.cn Inc.
  * Copyright (c) 2014-2016 All Rights Reserved.
  */
-package com.elin4it.ezmessage.thread;
+package com.elin4it.ezmessage.util.connect;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
-import com.elin4it.ezmessage.SalveSocket;
+import com.elin4it.ezmessage.entity.EZSocket;
 
 /**
  * @author ElinZhou
@@ -19,15 +19,15 @@ import com.elin4it.ezmessage.SalveSocket;
  */
 public class ReadThread implements Runnable {
     private static final Logger         LOGGER = Logger.getLogger(ReadThread.class);
-    private SalveSocket                 salveSocket;
+    private EZSocket EZSocket;
     private BufferedReader              in;
     private LinkedBlockingQueue<String> receiveMessageQueue;
 
-    public ReadThread(SalveSocket salveSocket, LinkedBlockingQueue<String> receiveMessageQueue) {
-        this.salveSocket = salveSocket;
+    public ReadThread(EZSocket EZSocket, LinkedBlockingQueue<String> receiveMessageQueue) {
+        this.EZSocket = EZSocket;
         try {
             in = new BufferedReader(
-                new InputStreamReader(salveSocket.getSocket().getInputStream()));
+                new InputStreamReader(EZSocket.getSocket().getInputStream()));
             this.receiveMessageQueue = receiveMessageQueue;
         } catch (Exception e) {
 
@@ -45,7 +45,7 @@ public class ReadThread implements Runnable {
             while (true) {
                 while ((inString = in.readLine()) != null && inString.length() != 0) {
                     receiveMessageQueue.put(inString);
-                    LOGGER.info("收到" + salveSocket.getSalveId() + "发送的数据：" + inString);
+                    LOGGER.info("收到" + EZSocket.getId() + "发送的数据：" + inString);
                 }
                 Thread.sleep(100);
             }
@@ -55,7 +55,7 @@ public class ReadThread implements Runnable {
         }catch (Exception e) {
             e.printStackTrace();
         } finally {
-            LOGGER.info(salveSocket.getSalveId() + " 读线程被关闭");
+            LOGGER.info(EZSocket.getId() + " 读线程被关闭");
         }
 
     }

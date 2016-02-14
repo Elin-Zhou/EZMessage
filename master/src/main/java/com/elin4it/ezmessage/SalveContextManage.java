@@ -10,13 +10,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
-import com.elin4it.ezmessage.thread.ReadThread;
+import com.elin4it.ezmessage.util.connect.ReadThread;
 import com.elin4it.ezmessage.thread.SalveHandle;
-import com.elin4it.ezmessage.thread.WriteThread;
+import com.elin4it.ezmessage.util.connect.WriteThread;
 
 /**
  * @author ElinZhou
@@ -134,7 +133,7 @@ public class SalveContextManage {
         SalveContext salve = aliveSalve.get(salveId);
         if (salve != null) {
             try {
-                salve.getSalveHandle().getSalveSocket().getSocket().close();
+                salve.getSalveHandle().getEZSocket().getSocket().close();
                 salve.getWriteThread().setIsRun(false);
             } catch (Exception e) {
                 e.printStackTrace();

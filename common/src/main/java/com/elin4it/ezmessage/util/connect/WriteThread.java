@@ -2,7 +2,7 @@
  * Yumeitech.com.cn Inc.
  * Copyright (c) 2014-2016 All Rights Reserved.
  */
-package com.elin4it.ezmessage.thread;
+package com.elin4it.ezmessage.util.connect;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.elin4it.ezmessage.SalveSocket;
+import com.elin4it.ezmessage.entity.EZSocket;
 import com.elin4it.ezmessage.message.Message;
 import org.apache.log4j.Logger;
 
@@ -20,16 +20,16 @@ import org.apache.log4j.Logger;
  */
 public class WriteThread implements Runnable {
     private static final Logger          LOGGER = Logger.getLogger(WriteThread.class);
-    private SalveSocket                  salveSocket;
+    private EZSocket EZSocket;
     private BufferedWriter               out;
     private LinkedBlockingQueue<Message> sendMessageQueue;
     private AtomicBoolean                isRun  = new AtomicBoolean(true);
 
-    public WriteThread(SalveSocket salveSocket, LinkedBlockingQueue<Message> sendMessageQueue) {
-        this.salveSocket = salveSocket;
+    public WriteThread(EZSocket EZSocket, LinkedBlockingQueue<Message> sendMessageQueue) {
+        this.EZSocket = EZSocket;
         try {
             out = new BufferedWriter(
-                new OutputStreamWriter(salveSocket.getSocket().getOutputStream()));
+                new OutputStreamWriter(EZSocket.getSocket().getOutputStream()));
             this.sendMessageQueue = sendMessageQueue;
         } catch (Exception e) {
 
@@ -51,14 +51,14 @@ public class WriteThread implements Runnable {
                     out.write(message.toString());
                     out.write("\n");
                     out.flush();
-                    LOGGER.info("向" + salveSocket.getSalveId() + "发送数据：" + message.toString());
+                    LOGGER.info("向" + EZSocket.getId() + "发送数据：" + message.toString());
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            LOGGER.info(salveSocket.getSalveId() + " 写线程被关闭");
+            LOGGER.info(EZSocket.getId() + " 写线程被关闭");
         }
 
     }

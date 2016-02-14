@@ -2,7 +2,7 @@
  * Yumeitech.com.cn Inc.
  * Copyright (c) 2014-2016 All Rights Reserved.
  */
-package com.elin4it.ezmessage.MessageResolve;
+package com.elin4it.ezmessage.messageResolve;
 
 import com.elin4it.ezmessage.message.Message;
 

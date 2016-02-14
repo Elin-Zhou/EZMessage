@@ -4,9 +4,9 @@
  */
 package com.elin4it.ezmessage;
 
-import com.elin4it.ezmessage.thread.ReadThread;
+import com.elin4it.ezmessage.util.connect.ReadThread;
 import com.elin4it.ezmessage.thread.SalveHandle;
-import com.elin4it.ezmessage.thread.WriteThread;
+import com.elin4it.ezmessage.util.connect.WriteThread;
 
 import java.util.Date;
 import java.util.concurrent.Future;
