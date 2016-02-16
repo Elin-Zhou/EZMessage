@@ -4,11 +4,11 @@
  */
 package test;
 
-import com.elin4it.ezmessage.messageResolve.MessageResolve;
-import com.elin4it.ezmessage.messageResolve.SimpleMessageResolve;
-import com.elin4it.ezmessage.SimperReceiver;
-import com.elin4it.ezmessage.message.CustomMessage;
-import com.elin4it.ezmessage.message.Message;
+import com.elin4it.ezmessage.common.message.CustomMessage;
+import com.elin4it.ezmessage.common.message.Message;
+import com.elin4it.ezmessage.common.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.master.SimperReceiver;
+import com.elin4it.ezmessage.master.messageResolve.SimpleMessageResolve;
 
 /**
  * 工程启动入口
@@ -22,14 +22,9 @@ public class MasterLaunch {
         MessageResolve messageResolve = new SimpleMessageResolve();
         receiver.setMessageResolve(messageResolve);
         receiver.start();
-        //        try {
-        //            Thread.sleep(5000);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
-        //        receiver.pause();
+
         while (true) {
-            Message message = new CustomMessage("你好你好", "MASTER");
+            Message message = new CustomMessage("我是MASTER", "MASTER");
             receiver.sendMessage(message);
             try {
                 Thread.sleep(1000);
@@ -37,12 +32,6 @@ public class MasterLaunch {
                 e.printStackTrace();
             }
         }
-
-        //        try {
-        //            Thread.sleep(5000);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
-        //        receiver.goOn();
     }
+
 }
