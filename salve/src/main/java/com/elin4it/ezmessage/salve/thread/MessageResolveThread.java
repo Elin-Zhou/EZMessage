@@ -8,6 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.elin4it.ezmessage.common.message.*;
 import com.elin4it.ezmessage.common.messageResolve.MessageResolve;
+import com.elin4it.ezmessage.salve.messageResolve.CallBackMessageResolve;
 import com.elin4it.ezmessage.salve.messageResolve.InitMessageResolve;
 
 /**
@@ -19,7 +20,8 @@ public class MessageResolveThread implements Runnable {
 
     private MessageResolve              messageResolve;
     private LinkedBlockingQueue<String> receiveMessageQueue;
-    private MessageResolve              initMessageResolve = new InitMessageResolve();
+    private MessageResolve              initMessageResolve     = new InitMessageResolve();
+    private MessageResolve              callBackMessageResolve = new CallBackMessageResolve();
 
     public MessageResolveThread(MessageResolve messageResolve,
                                 LinkedBlockingQueue<String> receiveMessageQueue) {
@@ -44,6 +46,7 @@ public class MessageResolveThread implements Runnable {
                         }
                     } else if (message instanceof CallBackMessage) {
                         //处理回调消息
+                        callBackMessageResolve.resolve(message);
                     } else if (message instanceof CustomMessage && messageResolve != null) {
                         //处理客户消息
                         messageResolve.resolve(message);

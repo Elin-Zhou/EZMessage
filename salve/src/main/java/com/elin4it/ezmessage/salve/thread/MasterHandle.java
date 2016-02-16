@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.elin4it.ezmessage.common.message.CallBackMessage;
+import com.elin4it.ezmessage.salve.CallBackMessageManage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -41,8 +43,18 @@ public class MasterHandle implements Runnable {
         this.messageResolve = messageResolve;
     }
 
-    public void sendMessage(Message message) {
+    public boolean sendMessage(Message message) {
+
+        if (StringUtils.isBlank(message.getSender())){
+            return false;
+        }
+
+        //如果该消息为回调消息，则通知回调消息管理
+        if (message instanceof CallBackMessage) {
+            CallBackMessageManage.notify((CallBackMessage) message);
+        }
         sendMessageQueue.add(message);
+        return true;
     }
 
     @Override

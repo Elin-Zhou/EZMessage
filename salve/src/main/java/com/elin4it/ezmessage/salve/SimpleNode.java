@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import com.elin4it.ezmessage.common.message.Message;
 import com.elin4it.ezmessage.common.messageResolve.MessageResolve;
 import com.elin4it.ezmessage.salve.thread.NodeServer;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 从节点入口
@@ -50,8 +51,19 @@ public class SimpleNode {
         socketExecutor.submit(nodeServer);
     }
 
-    public void sendMessage(Message message) {
-        NodeServer.masterContext.getMasterHandle().sendMessage(message);
+    public boolean sendMessage(Message message) {
+        try {
+            String selfId;
+            while (NodeServer.masterContext == null
+                   || StringUtils.isBlank(selfId = NodeServer.masterContext.getSelfId())) {
+                Thread.sleep(100);
+            }
+            message.setSender(selfId);
+            return NodeServer.masterContext.getMasterHandle().sendMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public MessageResolve getMessageResolve() {
