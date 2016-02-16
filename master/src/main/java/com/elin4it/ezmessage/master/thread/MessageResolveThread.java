@@ -17,7 +17,7 @@ import com.elin4it.ezmessage.master.messageResolve.HeartBeatMessageResolve;
  */
 public class MessageResolveThread implements Runnable {
 
-    private MessageResolve messageResolve;
+    private MessageResolve              messageResolve;
     private LinkedBlockingQueue<String> receiveMessageQueue;
     private MessageResolve              heartBeatMessageResolve = new HeartBeatMessageResolve();
 
@@ -40,9 +40,8 @@ public class MessageResolveThread implements Runnable {
                         if (systemMessage.getSystemMessageType() == SystemMessageType.HEART_BEAT) {
                             heartBeatMessageResolve.resolve(systemMessage);
                         }
-                    } else if (message instanceof CallBackMessage) {
-
-                    } else if (message instanceof CustomMessage && messageResolve != null) {
+                    } else if (message instanceof CallBackMessage
+                               || (message instanceof CustomMessage && messageResolve != null)) {
 
                         messageResolve.resolve(message);
                     } else {

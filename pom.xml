@@ -109,7 +109,7 @@
 	
 	<modules>
 		<module>master</module>
-		<module>slave</module>
+		<module>salve</module>
 		<module>common</module>
 		<module>test</module>
     </modules>
@@ -121,8 +121,8 @@
 		<commons.lang.version>2.6</commons.lang.version>
 		
 		<!--内部jar包依赖版本-->
-		<master.version>1.0</master.version>
-		<salve.version>1.0</salve.version>
+		<master.version>1.0 Alpha1</master.version>
+		<salve.version>1.0 Alpha1</salve.version>
 		<common.version>1.0</common.version>
 		
 	</properties>
